@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GraphQL Profile</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbarInner">
+      <div></div>
+      <div class="who">
+        <div class="whoLabel">Logged in as</div>
+        <div id="who" class="whoName">—</div>
+      </div>
+      <div class="topbarActions">
+        <button id="logoutBtn" class="btn btnGhost">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="shell">
+    <section class="cards">
+      <div class="kpi">
+        <div class="kpiLabel">User</div>
+        <div id="userId" class="kpiValue">—</div>
+        <div id="userLogin" class="kpiHint">—</div>
+      </div>
+
+      <div class="kpi">
+        <div class="kpiLabel">Total XP (All time)</div>
+        <div id="totalXPAll" class="kpiValue">—</div>
+        
+      </div>
+
+      <div class="kpi">
+        <div class="kpiLabel">Total XP (Last 6 months)</div>
+        <div id="totalXP6m" class="kpiValue">—</div>
+        
+      </div>
+
+      <div class="kpi">
+        <div class="kpiLabel">Audit Ratio</div>
+        <div id="auditRatio" class="kpiValue">—</div>
+        <div id="auditDetail" class="kpiHint">—</div>
+      </div>
+
+      <div class="kpi">
+        <div class="kpiLabel">Projects</div>
+        <div id="projectsPF" class="kpiValue">—</div>
+        <div class="kpiHint">Pass / Fail counts</div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Statistics (SVG)</h2>
+      
+
+      <div class="statsGrid">
+        <div class="chartCard">
+          <div class="chartTitle">XP Over Time (Last 6 months)</div>
+          <div id="xpLine" class="chartWrap chartLine"></div>
+        </div>
+
+        <div></div>
+
+        <div class="chartCard">
+          <div class="chartTitle">XP By Project (Top 12)</div>
+          <div id="xpBars" class="chartWrap chartTall"></div>
+        </div>
+
+        <div class="chartCard">
+          <div class="chartTitle">Pass / Fail</div>
+          <div id="pfDonut" class="chartWrap chartTall"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script type="module" src="./js/profile.js"></script>
+</body>
+</html>
