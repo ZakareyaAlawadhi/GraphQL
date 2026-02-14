@@ -1,0 +1,9 @@
+{
+  "name": "graphql-site",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "echo \"No start script defined.\""
+  },
+  "dependencies": {}
+}
