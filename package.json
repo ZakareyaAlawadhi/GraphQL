@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "echo \"No start script defined.\""
+    "start": "echo \"No start script defined.\"",
+    "build": "mkdir -p dist && cp -r \"New folder/.\" dist"
   },
   "dependencies": {}
 }
