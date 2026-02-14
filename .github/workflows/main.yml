@@ -29,7 +29,7 @@ jobs:
       - name: Install deps
         run: npm ci || npm install
 
-      - name: Debug: show workspace and package files
+      - name: "Debug: show workspace and package files"
         run: |
           echo "PWD: $(pwd)"
           echo "Listing repo root:"; ls -la
