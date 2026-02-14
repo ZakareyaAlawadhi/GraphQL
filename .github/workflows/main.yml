@@ -1,66 +1,49 @@
 name: Deploy to GitHub Pages
- 
+
 on:
   push:
-    branches: [master, main]
+    branches: [ "main" ]
   workflow_dispatch:
- 
+
 permissions:
   contents: read
   pages: write
   id-token: write
- 
+
 concurrency:
-  group: pages
+  group: "pages"
   cancel-in-progress: true
- 
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
- 
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: npm
 
-      - name: Debug: show workspace
-        run: |
-          echo "PWD: $(pwd)"
-          echo "Listing files:" && ls -la
-          echo "Listing repo root files:" && ls -la .
-          echo "package.json content:" && cat package.json || true
-          echo "package-lock.json content (short):" && head -n 40 package-lock.json || true
-          node --version || true
-          npm --version || true
- 
       - name: Install deps
-        run: npm ci || npm install
- 
+        run: npm ci
+
       - name: Build
-        env:
-          # Tells vite.config.js to auto-set base to /<repo>/ for Pages
-          GITHUB_PAGES: "true"
         run: npm run build
- 
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
- 
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
- 
+
   deploy:
-    needs: build
-    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
     steps:
       - name: Deploy
         id: deployment
