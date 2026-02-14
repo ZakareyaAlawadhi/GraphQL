@@ -25,6 +25,16 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+
+      - name: Debug: show workspace
+        run: |
+          echo "PWD: $(pwd)"
+          echo "Listing files:" && ls -la
+          echo "Listing repo root files:" && ls -la .
+          echo "package.json content:" && cat package.json || true
+          echo "package-lock.json content (short):" && head -n 40 package-lock.json || true
+          node --version || true
+          npm --version || true
  
       - name: Install deps
         run: npm ci || npm install
