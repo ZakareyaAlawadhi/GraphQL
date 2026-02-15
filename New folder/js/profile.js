@@ -1,4 +1,3 @@
-// profile.js
 import { clearToken, getToken } from "./auth.js";
 import { gql } from "./graphql.js";
 import { formatXP } from "./utils.js";
@@ -13,7 +12,7 @@ document.getElementById("logoutBtn")?.addEventListener("click", () => {
   window.location.replace("./index.html");
 });
 
-// ----- DOM -----
+// DOM 
 const whoEl = document.getElementById("who");
 const userIdEl = document.getElementById("userId");
 const userLoginEl = document.getElementById("userLogin");
@@ -27,7 +26,7 @@ const xpLineWrap = document.getElementById("xpLine");
 const xpBarsWrap = document.getElementById("xpBars");
 const pfWrap = document.getElementById("pfDonut");
 
-// ----- GraphQL -----
+// GraphQL 
 
 // Normal query
 const Q_USER = `
@@ -60,7 +59,7 @@ const Q_XP_6M = `
   }
 `;
 
-// ALL TIME XP transactions (used for "XP By Project" bars)
+// ALL TIME XP transactions 
 const Q_XP_ALL = `
   query XPAll {
     transaction(
@@ -75,7 +74,7 @@ const Q_XP_ALL = `
   }
 `;
 
-// Nested query (progress -> object) (projects only)
+// Nested query (progress -> object) 
 const Q_RESULTS = `
   query ProgressProjects {
     progress(
@@ -91,7 +90,7 @@ const Q_RESULTS = `
   }
 `;
 
-// ----- Helpers -----
+// Helpers 
 function sixMonthsAgoISO() {
   const d = new Date();
   d.setMonth(d.getMonth() - 6);
@@ -126,7 +125,7 @@ function cumulativeByDay(transactions) {
   });
 }
 
-// ----- Main -----
+// Main 
 async function load() {
   const from = sixMonthsAgoISO();
 
@@ -160,7 +159,7 @@ async function load() {
   auditRatioEl.textContent = down === 0 ? "—" : (up / down).toFixed(2);
   auditDetailEl.textContent = `Up: ${formatXP(up)} • Down: ${formatXP(down)}`;
 
-  // last 6m (for line chart + "Total XP (Last 6 months)" box)
+  // last 6m 
   const tx6m = xp6mData.transaction ?? [];
   const xp6m = tx6m.reduce((s, t) => s + (t.amount ?? 0), 0);
   totalXP6mEl.textContent = formatXP(xp6m);
@@ -168,25 +167,37 @@ async function load() {
   const linePoints = cumulativeByDay(tx6m);
   renderXPLineChart(xpLineWrap, linePoints);
 
-  // projects list (from progress query)
+  // projects list 
   const results = resultsData.progress ?? [];
 
-  // pass/fail projects only
-  const pass = results.filter((r) => (r.grade ?? 0) >= 1).length;
-  const fail = results.filter((r) => (r.grade ?? 0) === 0).length;
-  projectsPFEl.textContent = `${pass} / ${fail}`;
-  renderDonut(pfWrap, pass, fail);
+const latestByProject = new Map();
 
-  // ---- XP by project (ALL TIME) ----
+for (const r of results) {
+  const key = r.object?.id ?? r.path; // prefer object.id 
+  if (!key) continue;
+  if (!latestByProject.has(key)) {
+    latestByProject.set(key, r);
+  }
+}
+
+const latest = Array.from(latestByProject.values());
+
+const pass = latest.filter(r => (r.grade ?? 0) >= 1).length;
+const fail = latest.filter(r => (r.grade ?? 0) === 0).length;
+
+projectsPFEl.textContent = `${pass} / ${fail}`;
+renderDonut(pfWrap, pass, fail);
+
+  //  XP by project (ALL TIME) 
   const txAll = xpAllTxData.transaction ?? [];
 
-  // Build a set of known project paths (projects only)
+  // Build a set of known project paths 
   const projectPathSet = new Set(results.map((r) => r.path).filter(Boolean));
 
   // Keep only XP transactions that match a project path
   const txProjectsAll = txAll.filter((t) => projectPathSet.has(t.path));
 
-  // Group by full path, but display a nicer label (slug) for chart labels/tooltip
+  // Group by full path
   const byPath = groupSum(
     txProjectsAll,
     (t) => t.path ?? "unknown",
